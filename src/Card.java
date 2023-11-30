@@ -6,9 +6,4 @@ public class Card {
     public String getName() {
         return this.name;
     }
-    public void function() {
-        if(this.name.equals("Attack")) {
-
-        }
-    }
 }
