@@ -40,4 +40,14 @@ public class Player {
         }
         deck.remove(cnt);
     }
+    public boolean containsCard(String x) {
+        for (int i = 0; i < deck.size(); i++) {
+            if(deck.get(i).getName().equals(x)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

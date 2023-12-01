@@ -3,9 +3,61 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
+    private int numCardAttack;
+    private LinkedList<Card> currentDeck;
+    public Main(int numCardAttack, LinkedList<Card> currentDeck) {
+        this.numCardAttack = this.numCardAttack + numCardAttack;
+        this.currentDeck = currentDeck;
+    }
     public static void main(String[] args) {
+        Main m = new Main(0, newdeck());
+        m.run();
+    }
+
+    public static LinkedList<Card> newdeck() {
+        LinkedList<Card> deck = new LinkedList<>();
+        LinkedList<Integer> temp = new LinkedList<>();
+        for (int i = 0; i < 49; i++) {
+            temp.add(i);
+        }
+        Collections.shuffle(temp);
+        for (int i = 0; i < 49; i++) {
+            int x = temp.get(i);
+            if(x < 4) {
+                deck.add(new Card("Attack"));
+            }else if(x < 8) {
+                deck.add(new Card("Breaded Cat"));
+            }else if(x < 12) {
+                deck.add(new Card("Catermelon Cat"));
+            }else if(x < 16) {
+                deck.add(new Card("Hairy Potato Cat"));
+            }else if(x < 20) {
+                deck.add(new Card("Rainbow-Ralphing Cat"));
+            }else if(x < 24) {
+                deck.add(new Card("Taco Cat"));
+            }else if(x < 30) {
+                deck.add(new Card("Shuffle"));
+            }else if(x < 34) {
+                deck.add(new Card("Skip"));
+            }else if(x < 38) {
+                deck.add(new Card("Favor"));
+            }else if(x < 43) {
+                deck.add(new Card("Nope"));
+            }else if(x < 48) {
+                deck.add(new Card("See The Future"));
+            }else if(x < 49) {
+                deck.add(new Card("Shuffle"));
+            }
+        }
+        return deck;
+    }
+    public static void Play(String x) {
+
+    }
+
+
+    public void run() {
         LinkedList<Player> player = new LinkedList<>();
-        LinkedList<Card> currentDeck = Newdeck();
         Scanner scan = new Scanner(System.in);
         String answer = "";
         System.out.println("Do you wish to start the game? (Yes or No)");
@@ -72,57 +124,29 @@ public class Main {
                                 player.get(i).showDeck();
                                 System.out.println();
                             }else if(ans.equals("1")) {
-                                System.out.println("What card do you wish to play?");
-                                String play = scan.nextLine();
-                                function(play);
+                                boolean keepPlay = true;
+                                while(keepPlay) {
+                                    System.out.println("What card do you wish to play?");
+                                    String play = scan.nextLine();
+                                    if (player.get(i).containsCard(play)) {
+                                        Play(play);
+                                        player.get(i).removeCard(play);
+                                        if(play.equals("Attack") || play.equals("Skip")) {
+                                            keepPlay = false;
+                                        }
+                                    }else {
+                                        System.out.println("Sorry, this card is not in your deck");
+                                    }
+                                    System.out.println("Your hand now is: ");
+                                    System.out.println();
+                                    player.get(i).showDeck();
+                                    System.out.println();
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-    }
-
-    public static LinkedList<Card> Newdeck() {
-        LinkedList<Card> deck = new LinkedList<>();
-        LinkedList<Integer> temp = new LinkedList<>();
-        for (int i = 0; i < 49; i++) {
-            temp.add(i);
-        }
-        Collections.shuffle(temp);
-        for (int i = 0; i < 49; i++) {
-            int x = temp.get(i);
-            if(x < 4) {
-                deck.add(new Card("Attack"));
-            }else if(x < 8) {
-                deck.add(new Card("Breaded Cat"));
-            }else if(x < 12) {
-                deck.add(new Card("Catermelon Cat"));
-            }else if(x < 16) {
-                deck.add(new Card("Hairy Potato Cat"));
-            }else if(x < 20) {
-                deck.add(new Card("Rainbow-Ralphing Cat"));
-            }else if(x < 24) {
-                deck.add(new Card("Taco Cat"));
-            }else if(x < 30) {
-                deck.add(new Card("Shuffle"));
-            }else if(x < 34) {
-                deck.add(new Card("Skip"));
-            }else if(x < 38) {
-                deck.add(new Card("Favor"));
-            }else if(x < 43) {
-                deck.add(new Card("Nope"));
-            }else if(x < 48) {
-                deck.add(new Card("See The Future"));
-            }else if(x < 49) {
-                deck.add(new Card("Shuffle"));
-            }
-        }
-        return deck;
-    }
-    public static void function(String x) {
-        if(x.equals("Attack")) {
-
         }
     }
 }
