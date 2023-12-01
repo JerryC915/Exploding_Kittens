@@ -4,13 +4,17 @@ import java.util.Scanner;
 
 public class Main {
     private int numCardAttack;
+    private int favorPerson;
     private LinkedList<Card> currentDeck;
-    public Main(int numCardAttack, LinkedList<Card> currentDeck) {
+    private LinkedList<Player> player;
+    public Main(int numCardAttack, LinkedList<Card> currentDeck, LinkedList<Player> player, int favorPerson) {
         this.numCardAttack = this.numCardAttack + numCardAttack;
         this.currentDeck = currentDeck;
+        this.player = player;
+        this.favorPerson = favorPerson;
     }
     public static void main(String[] args) {
-        Main m = new Main(0, newdeck());
+        Main m = new Main(0, newdeck(),new LinkedList<Player>(),-1);
         m.run();
     }
 
@@ -51,13 +55,20 @@ public class Main {
         }
         return deck;
     }
-    public static void Play(String x) {
-
+    public void Play(String x, int favor) {
+        if(x.equals("Attack")) {
+            this.numCardAttack = this.numCardAttack + 2;
+        }else if(x.equals("Shuffle")) {
+            Collections.shuffle(this.currentDeck);
+        }else if(x.equals("Nope")) {
+            this.numCardAttack = 0;
+        }else if(x.equals("Favor")){
+            favorPerson = favor;
+        }
     }
 
 
     public void run() {
-        LinkedList<Player> player = new LinkedList<>();
         Scanner scan = new Scanner(System.in);
         String answer = "";
         System.out.println("Do you wish to start the game? (Yes or No)");
@@ -74,12 +85,12 @@ public class Main {
                 System.out.println("How many players are playing?");
                 temp = scan.nextLine();
                 for (int i = 0; i < Integer.parseInt(temp); i++) {
-                    player.add(new Player(new LinkedList<Card>()));
+                    this.player.add(new Player(new LinkedList<Card>()));
                 }
-                for (int i = 0; i < player.size(); i++) {
-                    player.get(i).addCard(new Card("Diffuse"));
+                for (int i = 0; i < this.player.size(); i++) {
+                    this.player.get(i).addCard(new Card("Diffuse"));
                     for (int j = 0; j < 6; j++) {
-                        player.get(i).addCard(currentDeck.pop());
+                        this.player.get(i).addCard(currentDeck.pop());
                     }
                 }
                 for (int i = 0; i < 4; i++) {
@@ -88,65 +99,109 @@ public class Main {
                 }
                 boolean check = true;
                 while(check) {
-                    for (int i = 0; i < player.size(); i++) {
+                    for (int i = 0; i < this.player.size(); i++) {
                         String ans = "";
                         int t = i + 1;
                         System.out.println("It is now player " + t + "'s turn");
                         System.out.println("is this player " + t + "?");
                         String cp = scan.nextLine();
+                        if(numCardAttack > 0) {
+                            System.out.println("Oops! Looks like you are under attack!");
+                            if(!this.player.get(i).containsCard("Nope") && !this.player.get(i).containsCard("Skip") && !this.player.get(i).containsCard("Attack")) {
+                                System.out.println("You don't have any card possible to block from the attack, we will automatically draw you the card");
+                                for (int j = 0; j < numCardAttack; j++) {
+                                    this.player.get(i).addCard(currentDeck.pop());
+                                    explode(i);
+                                }
+                            }else {
+                                System.out.println("1. Defend with: ");
+                                this.player.get(i).showCounterCards();
+                                System.out.println("or");
+                                System.out.println("2. You choose to draw the cards");
+                                String c = scan.nextLine();
+                                if(c.equals("1")){
+                                    System.out.println("Which card do you choose to defend?");
+                                    String df = scan.nextLine();
+                                    Play(df,0);
+                                    player.get(i).removeCard(df);
+                                    if(df.equals("Attack") || df.equals("Skip")) {
+                                        break;
+                                    }
+                                }else if(c.equals("2")) {
+                                    for (int j = 0; j < numCardAttack; j++) {
+                                        this.player.get(i).addCard(currentDeck.pop());
+                                        explode(i);
+                                    }
+                                }
+                            }
+                        }
                         if(cp.equals("yes")) {
-                            System.out.println("This is your hand below: ");
-                            System.out.println();
-                            player.get(i).showDeck();
-                            System.out.println();
+                            showHand(i);
                             System.out.println("1. Play a card");
                             System.out.println("2. Draw a card");
                             ans = scan.nextLine();
-                            if(ans.equals("2")) {
-                                player.get(i).addCard(currentDeck.pop());
-                                if(player.get(i).Top().equals("Exploding Kittens")){
-                                    System.out.println("Oops! Looks like you drawed an Exploding Kitten!");
-                                    if(player.get(i).containsDiffuse()) {
-                                        System.out.println("The system will automatically play your Diffuse card");
-                                        player.get(i).removeCard("Diffuse");
-                                        player.get(i).removeCard("Exploding Kittens");
-                                        System.out.println("Now you have the choice to put the Exploding Kitten anywhere in the deck you want");
-                                        System.out.println("Please choose an index for where you want to put the card at: ");
-                                        String index = scan.nextLine();
-                                        currentDeck.add(Integer.parseInt(index),new Card("Exploding Kitten"));
-                                    }else {
-                                        System.out.println("Ouch, looks like you don't have any Diffuse in your deck");
-                                        System.out.println("You are out!");
-                                    }
-                                }
-                                System.out.println("Your hand now is: ");
-                                System.out.println();
-                                player.get(i).showDeck();
-                                System.out.println();
-                            }else if(ans.equals("1")) {
+                            if(ans.equals("1")) {
                                 boolean keepPlay = true;
                                 while(keepPlay) {
                                     System.out.println("What card do you wish to play?");
                                     String play = scan.nextLine();
-                                    if (player.get(i).containsCard(play)) {
-                                        Play(play);
-                                        player.get(i).removeCard(play);
+                                    if (this.player.get(i).containsCard(play)) {
+                                        if(play.equals("Favor")){
+                                            System.out.println("Which Player do you want to favor?");
+                                            String fp = scan.nextLine();
+                                            Play(play, Integer.parseInt(fp));
+                                            System.out.println("Is this player " + Integer.parseInt(fp));
+
+                                        }
+                                        Play(play,0);
+                                        this.player.get(i).removeCard(play);
                                         if(play.equals("Attack") || play.equals("Skip")) {
-                                            keepPlay = false;
+                                            break;
                                         }
                                     }else {
                                         System.out.println("Sorry, this card is not in your deck");
                                     }
-                                    System.out.println("Your hand now is: ");
-                                    System.out.println();
-                                    player.get(i).showDeck();
-                                    System.out.println();
+                                    showHand(i);
+                                    System.out.println("Do you still want to play a card? Yes or No");
+                                    if(scan.nextLine().toLowerCase().equals("no")) {
+                                        keepPlay = false;
+                                    }
+                                }
+                                if(keepPlay) {
+                                   continue;
                                 }
                             }
+                            this.player.get(i).addCard(currentDeck.pop());
+                            explode(i);
+                            showHand(i);
                         }
                     }
                 }
             }
         }
+    }
+    public void explode(int i) {
+        Scanner scan = new Scanner(System.in);
+        if(this.player.get(i).containsCard("Exploding Kittens")) {
+            System.out.println("Oops! Looks like you drawn an Exploding Kitten!");
+            if(this.player.get(i).containsDiffuse()) {
+                System.out.println("The system will automatically play your Diffuse card");
+                this.player.get(i).removeCard("Diffuse");
+                this.player.get(i).removeCard("Exploding Kittens");
+                System.out.println("Now you have the choice to put the Exploding Kitten anywhere in the deck you want");
+                System.out.println("Please choose an index for which index you want to put the card at: ");
+                String index = scan.nextLine();
+                currentDeck.add(Integer.parseInt(index),new Card("Exploding Kitten"));
+            }else {
+                System.out.println("Ouch, looks like you don't have any Diffuse in your deck");
+                System.out.println("You are out!");
+            }
+        }
+    }
+    public void showHand(int i) {
+        System.out.println("Your hand now is: ");
+        System.out.println();
+        this.player.get(i).showDeck();
+        System.out.println();
     }
 }

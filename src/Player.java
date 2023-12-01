@@ -18,10 +18,13 @@ public class Player {
         }
         return deck;
     }
-    public String Top() {
-        return deck.get(deck.size()-1).getName();
+    public void showCounterCards() {
+        for (int i = 0; i < deck.size(); i++) {
+            if(deck.get(i).getName().equals("Attack") || deck.get(i).getName().equals("Skip") || deck.get(i).getName().equals("Nope")) {
+                System.out.println(deck.get(i).getName());
+            }
+        }
     }
-
     public boolean containsDiffuse() {
         for (int i = 0; i < deck.size(); i++) {
             if(deck.get(i).getName().equals("Diffuse")) {
@@ -48,6 +51,5 @@ public class Player {
         }
         return false;
     }
-
 
 }
