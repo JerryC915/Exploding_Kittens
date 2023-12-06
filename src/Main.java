@@ -72,8 +72,8 @@ public class Main {
             System.out.println(currentDeck.get(1).getName());
             System.out.println(currentDeck.get(2).getName());
             System.out.println();
-        }else if(x.equals("Catermelon Cat")){
-
+        }else if(x.equals("Catermelon Cat") || x.equals("Breaded Cat") || x.equals("Hairy Potato Cat") || x.equals("Rainbow-Ralphing Cat") || x.equals("Taco Cat")){
+            regularCat(x,p);
         }
     }
 
@@ -221,9 +221,11 @@ public class Main {
                 this.player.get(i).removeCard("Diffuse");
                 this.player.get(i).removeCard("Exploding Kittens");
                 System.out.println("Now you have the choice to put the Exploding Kitten anywhere in the deck you want");
+                System.out.println();
+                System.out.println("There are " + currentDeck.size() + " cards left in the deck");
                 System.out.println("Please choose an index for which index you want to put the card at: ");
                 String index = scan.nextLine();
-                currentDeck.add(Integer.parseInt(index),new Card("Exploding Kittens"));
+                currentDeck.add(Integer.parseInt(index) -1 ,new Card("Exploding Kittens"));
             }else {
                 System.out.println("Ouch, looks like you don't have any Diffuse in your deck");
                 System.out.println("You are out!");
@@ -264,7 +266,7 @@ public class Main {
         String tempPlayer = scan.nextLine();
         System.out.println("Is this player " + tempPlayer + "?");
         if(scan.nextLine().equals("yes")) {
-            if(!player.get(Integer.parseInt(tempPlayer)).containsCard(want) && numCat == 3) {
+            if(!player.get(Integer.parseInt(tempPlayer) - 1).containsCard(want) && numCat == 3) {
                 System.out.println("Oops! Looks like the card the other player want does not exist in your deck! Nothing happend!");
                 player.get(x).removeCard(cat);
                 player.get(x).removeCard(cat);
@@ -274,23 +276,28 @@ public class Main {
                     System.out.println("You have the chance to Nope from giving away your " + want + ", do you wish to play the Nope?");
                     if (scan.nextLine().equals("no")) {
                         player.get(x).addCard(new Card(want));
-                        player.get(Integer.parseInt(tempPlayer)).removeCard(want);
+                        player.get(Integer.parseInt(tempPlayer) - 1).removeCard(want);
                     }else {
-                        player.get(Integer.parseInt(tempPlayer)).removeCard("Nope");
+                        player.get(Integer.parseInt(tempPlayer) - 1).removeCard("Nope");
                     }
                     player.get(x).removeCard(cat);
                     player.get(x).removeCard(cat);
                 }
             }else if(numCat == 2) {
                 if (player.get(Integer.parseInt(tempPlayer) - 1).containsCard("Nope")) {
-                    System.out.println("You have the chance to Nope from giving away your " + want + ", do you wish to play the Nope?");
+                    System.out.println("You have the chance to Nope, do you wish to play the Nope?");
                     if (scan.nextLine().equals("no")) {
-                        System.out.println("Is this player " + x + "?");
+                        System.out.println("Is this player " + (x + 1) + "?");
                         if(scan.nextLine().equals("yes")){
-                            System.out.println("The other player have " + player.get(Integer.parseInt(tempPlayer)-1) + " cards, ");
+                            System.out.println("The other player have " + player.get(Integer.parseInt(tempPlayer)-1).totalCardNum() + " cards, ");
+                            System.out.println("Which card do you wish to steal");
+                            String rs = scan.nextLine();
+                            String temp = player.get(Integer.parseInt(tempPlayer) - 1).removeCardIndex(Integer.parseInt(rs));
+                            player.get(x).addCard(new Card(temp));
+                            player.get(x).removeCard(cat);
                         }
                     } else {
-                        player.get(Integer.parseInt(tempPlayer)).removeCard("Nope");
+                        player.get(Integer.parseInt(tempPlayer) - 1).removeCard("Nope");
                     }
                 }
             }

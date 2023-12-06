@@ -57,5 +57,12 @@ public class Player {
         }
         return cnt;
     }
-
+    public int totalCardNum() {
+        return deck.size();
+    }
+    public String removeCardIndex(int x) {
+        String temp = deck.get(x).getName();
+        deck.remove(x);
+        return temp;
+    }
 }
