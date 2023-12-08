@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -13,7 +14,8 @@ public class Main {
         this.player = player;
         this.favorPerson = favorPerson;
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        GameBoard G = new GameBoard();
         Main m = new Main(0, newdeck(),new LinkedList<Player>(),-1);
         m.run();
     }
@@ -197,6 +199,7 @@ public class Main {
                                     System.out.println("Do you still want to play a card? Yes or No");
                                     if(scan.nextLine().toLowerCase().equals("no")) {
                                         keepPlay = false;
+                                        System.out.println("Card automatically drawn for you");
                                     }
                                 }
                                 if(keepPlay) {
