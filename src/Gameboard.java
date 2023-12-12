@@ -6,39 +6,54 @@ import java.util.List;
 
 public class Gameboard extends JFrame {
 
-    private List<ImageIcon> cardImages;
+    private LinkedList<ImageIcon> cardImages = new LinkedList<>();
+    private LinkedList<String> cardNames = new LinkedList<>();
+    private JTextField mainScreen;
+    private JButton Play, Draw;
+    private JPanel mainPanel, centerPanel, playerPanel;
 
-    public Gameboard(LinkedList<Card> deck) {
-        cardImages = new ArrayList<>();
-        for (int i = 0; i < deck.size(); i++) {
-            String name = deck.get(i).getName();
-            if(name.equals("Diffuse")) {
-                cardImages.add(new ImageIcon("images/Diffuse.png"));
-            }
-        }
-        cardImages.add(new ImageIcon("card2.png"));
-
+    public Gameboard() {
         setTitle("Exploding Kittens");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
 
-        JPanel playerPanel = new JPanel(new FlowLayout());
-        for (ImageIcon image : cardImages) {
-            JButton cardButton = new JButton();
-            cardButton.setIcon(image);
-            cardButton.setPreferredSize(new Dimension(100, 150));
-            playerPanel.add(cardButton);
-        }
+        playerPanel = new JPanel(new FlowLayout());
 
-        JPanel centerPanel = new JPanel();
+        centerPanel = new JPanel();
         centerPanel.setBackground(Color.WHITE); // Represents the center of the game
+        mainScreen = new JTextField(100);
+        centerPanel.add(mainScreen);
 
         mainPanel.add(playerPanel, BorderLayout.SOUTH);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         add(mainPanel);
+    }
+
+    public void addCardImage(String name) {
+        ImageIcon temp = new ImageIcon("images/"+name+".png");
+        temp = new ImageIcon(temp.getImage().getScaledInstance(115, 160, Image.SCALE_SMOOTH));
+        cardImages.add(temp);
+        JButton cardButton = new JButton();
+        cardButton.setIcon(temp);
+        cardButton.setPreferredSize(new Dimension(115, 160));
+        playerPanel.add(cardButton);
+        cardNames.add(name);
+    }
+    public void removeCardImage(String name) {
+        for (int i = 0; i < cardImages.size(); i++) {
+            if(cardNames.get(i).equals(name)) {
+                cardImages.remove(i);
+            }
+        }
+    }
+    public void setPublicText(String x) {
+        this.mainScreen.setText(x);
+    }
+    public String getPublicText() {
+        return this.mainScreen.getText();
     }
 }

@@ -8,7 +8,7 @@ public class Main {
     private int favorPerson;
     private LinkedList<Card> currentDeck;
     private LinkedList<Player> player;
-    private LinkedList<Gameboard> gameboard;
+    private LinkedList<Gameboard> gameboard = new LinkedList<>();
     public Main(int numCardAttack, LinkedList<Card> currentDeck, LinkedList<Player> player, int favorPerson) {
         this.numCardAttack = this.numCardAttack + numCardAttack;
         this.currentDeck = currentDeck;
@@ -98,12 +98,15 @@ public class Main {
                 temp = scan.nextLine();
                 for (int i = 0; i < Integer.parseInt(temp); i++) {
                     this.player.add(new Player(new LinkedList<Card>())); //Creating the class of Players
-                    this.gameboard.add(new Gameboard(player.get(i).showDeck()));
+                    gameboard.add(new Gameboard());
                 }
                 for (int i = 0; i < this.player.size(); i++) { //Add Diffuse Card to each Player's Deck
                     this.player.get(i).addCard(new Card("Diffuse"));
+                    this.gameboard.get(i).addCardImage("Diffuse");
                     for (int j = 0; j < 6; j++) {
-                        this.player.get(i).addCard(currentDeck.pop());
+                        Card popCard = currentDeck.pop();
+                        this.player.get(i).addCard(popCard);
+                        this.gameboard.get(i).addCardImage(popCard.getName());
                     }
                 }
                 for (int i = 0; i < 4; i++) { //Add Exploding Kittens into the public deck
@@ -119,7 +122,6 @@ public class Main {
                         break;
                     }
                     for (int i = 0; i < this.player.size(); i++) {
-                        this.gameboard.get(i).setVisible(true);
                         String ans = "";
                         int t = i + 1;
                         System.out.println("It is now player " + t + "'s turn");
@@ -130,7 +132,9 @@ public class Main {
                             if(!this.player.get(i).containsCard("Nope") && !this.player.get(i).containsCard("Skip") && !this.player.get(i).containsCard("Attack")) {
                                 System.out.println("You don't have any card possible to block from the attack, we will automatically draw you the card");
                                 for (int j = 0; j < numCardAttack; j++) {
-                                    this.player.get(i).addCard(currentDeck.pop());
+                                    Card getAttackCard = currentDeck.pop();
+                                    this.player.get(i).addCard(getAttackCard);
+                                    this.gameboard.get(i).addCardImage(getAttackCard.getName());
                                     explode(i);
                                 }
                             }else {
@@ -156,6 +160,7 @@ public class Main {
                             }
                         }
                         if(cp.equals("yes")) {
+                            gameboard.get(i).setVisible(true);
                             showHand(i);
                             System.out.println("1. Play a card");
                             System.out.println("2. Draw a card");
@@ -220,11 +225,12 @@ public class Main {
     public void explode(int i) {
         Scanner scan = new Scanner(System.in);
         if(this.player.get(i).containsCard("Exploding Kittens")) {
-            System.out.println("Oops! Looks like you drawn an Exploding Kitten!");
             if(this.player.get(i).containsDiffuse()) {
-                System.out.println("The system will automatically play your Diffuse card");
+                gameboard.get(i).setPublicText("Oops! Looks like you drawn an Exploding Kitten! Please choose the Diffuse Card in your deck!");
                 this.player.get(i).removeCard("Diffuse");
+                this.gameboard.get(i).removeCardImage("Diffuse");
                 this.player.get(i).removeCard("Exploding Kittens");
+                this.gameboard.get(i).removeCardImage("Exploding Kittens");
                 System.out.println("Now you have the choice to put the Exploding Kitten anywhere in the deck you want");
                 System.out.println();
                 System.out.println("There are " + currentDeck.size() + " cards left in the deck");
