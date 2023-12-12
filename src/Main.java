@@ -8,6 +8,7 @@ public class Main {
     private int favorPerson;
     private LinkedList<Card> currentDeck;
     private LinkedList<Player> player;
+    private LinkedList<Gameboard> gameboard;
     public Main(int numCardAttack, LinkedList<Card> currentDeck, LinkedList<Player> player, int favorPerson) {
         this.numCardAttack = this.numCardAttack + numCardAttack;
         this.currentDeck = currentDeck;
@@ -15,7 +16,6 @@ public class Main {
         this.favorPerson = favorPerson;
     }
     public static void main(String[] args) throws IOException {
-        GameBoard G = new GameBoard();
         Main m = new Main(0, newdeck(),new LinkedList<Player>(),-1);
         m.run();
     }
@@ -32,7 +32,7 @@ public class Main {
             if(x < 4) {
                 deck.add(new Card("Attack"));
             }else if(x < 8) {
-                deck.add(new Card("Breaded Cat"));
+                deck.add(new Card("Bearded Cat"));
             }else if(x < 12) {
                 deck.add(new Card("Catermelon Cat"));
             }else if(x < 16) {
@@ -74,7 +74,7 @@ public class Main {
             System.out.println(currentDeck.get(1).getName());
             System.out.println(currentDeck.get(2).getName());
             System.out.println();
-        }else if(x.equals("Catermelon Cat") || x.equals("Breaded Cat") || x.equals("Hairy Potato Cat") || x.equals("Rainbow-Ralphing Cat") || x.equals("Taco Cat")){
+        }else if(x.equals("Catermelon Cat") || x.equals("Bearded Cat") || x.equals("Hairy Potato Cat") || x.equals("Rainbow-Ralphing Cat") || x.equals("Taco Cat")){
             regularCat(x,p);
         }
     }
@@ -98,6 +98,7 @@ public class Main {
                 temp = scan.nextLine();
                 for (int i = 0; i < Integer.parseInt(temp); i++) {
                     this.player.add(new Player(new LinkedList<Card>())); //Creating the class of Players
+                    this.gameboard.add(new Gameboard(player.get(i).showDeck()));
                 }
                 for (int i = 0; i < this.player.size(); i++) { //Add Diffuse Card to each Player's Deck
                     this.player.get(i).addCard(new Card("Diffuse"));
@@ -118,6 +119,7 @@ public class Main {
                         break;
                     }
                     for (int i = 0; i < this.player.size(); i++) {
+                        this.gameboard.get(i).setVisible(true);
                         String ans = "";
                         int t = i + 1;
                         System.out.println("It is now player " + t + "'s turn");
