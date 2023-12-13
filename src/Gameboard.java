@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,16 +12,14 @@ public class Gameboard extends JFrame {
     private LinkedList<String> cardNames = new LinkedList<>();
     private JTextField mainScreen;
     private JButton Play, Draw;
-    private JPanel mainPanel, centerPanel, playerPanel;
+    private JPanel front,mainPanel, centerPanel, playerPanel;
 
     public Gameboard() {
-        setTitle("Exploding Kittens");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         setSize(800, 600);
         setLocationRelativeTo(null);
 
         mainPanel = new JPanel(new BorderLayout());
-
         playerPanel = new JPanel(new FlowLayout());
 
         centerPanel = new JPanel();
