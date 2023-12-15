@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Gameboard extends JFrame {
+public class Gameboard extends JPanel {
 
     private LinkedList<ImageIcon> cardImages = new LinkedList<>();
     private LinkedList<String> cardNames = new LinkedList<>();
@@ -15,22 +15,15 @@ public class Gameboard extends JFrame {
     private JPanel front,mainPanel, centerPanel, playerPanel;
 
     public Gameboard() {
-
-        setSize(800, 600);
-        setLocationRelativeTo(null);
-
         mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setSize(800,600);
         playerPanel = new JPanel(new FlowLayout());
 
         centerPanel = new JPanel();
         centerPanel.setBackground(Color.WHITE); // Represents the center of the game
-        mainScreen = new JTextField(100);
-        centerPanel.add(mainScreen);
 
         mainPanel.add(playerPanel, BorderLayout.SOUTH);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
-
-        add(mainPanel);
     }
 
     public void addCardImage(String name) {
