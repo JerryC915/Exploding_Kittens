@@ -13,10 +13,11 @@ public class Main extends JFrame {
     private JPanel front;
     private JFrame frame;
     private int numCardAttack;
-    private int favorPerson;
+    private int favorPerson, playerAt;
     private LinkedList<Card> currentDeck;
     private LinkedList<Player> player;
     private LinkedList<Gameboard> gameboard = new LinkedList<Gameboard>();
+
     public Main(int numCardAttack, LinkedList<Card> currentDeck, LinkedList<Player> player, int favorPerson) {
         this.numCardAttack = this.numCardAttack + numCardAttack;
         this.currentDeck = currentDeck;
@@ -138,29 +139,9 @@ public class Main extends JFrame {
         front.add(rulesButton);
         frame.add(front);
         frame.setVisible(true);
+
     }
-    public void explode(int i) {
-        Scanner scan = new Scanner(System.in);
-        if(this.player.get(i).containsCard("Exploding Kittens")) {
-            if(this.player.get(i).containsDiffuse()) {
-                gameboard.get(i).setPublicText("Oops! Looks like you drawn an Exploding Kitten! Please choose the Diffuse Card in your deck!");
-                this.player.get(i).removeCard("Diffuse");
-                this.gameboard.get(i).removeCardImage("Diffuse");
-                this.player.get(i).removeCard("Exploding Kittens");
-                this.gameboard.get(i).removeCardImage("Exploding Kittens");
-                System.out.println("Now you have the choice to put the Exploding Kitten anywhere in the deck you want");
-                System.out.println();
-                System.out.println("There are " + currentDeck.size() + " cards left in the deck");
-                System.out.println("Please choose an index for which index you want to put the card at: ");
-                String index = scan.nextLine();
-                currentDeck.add(Integer.parseInt(index) -1 ,new Card("Exploding Kittens"));
-            }else {
-                System.out.println("Ouch, looks like you don't have any Diffuse in your deck");
-                System.out.println("You are out!");
-                player.remove(i);
-            }
-        }
-    }
+
     public void showHand(int i) {
         System.out.println("Your hand now is: ");
         System.out.println();
@@ -241,10 +222,11 @@ public class Main extends JFrame {
         }
     }
     public void run1(int numPlayer) {
+
         Scanner scan = new Scanner(System.in);
         for (int i = 0; i < numPlayer; i++) {
             this.player.add(new Player(new LinkedList<Card>())); //Creating the class of Players
-            gameboard.add(new Gameboard());
+            gameboard.add(new Gameboard(i + 1,this));
         }
         for (int i = 0; i < this.player.size(); i++) { //Add Diffuse Card to each Player's Deck
             this.player.get(i).addCard(new Card("Diffuse"));
@@ -262,6 +244,7 @@ public class Main extends JFrame {
         boolean check = true;
         while(check) { //Game Start
             for (int i = 0; i < this.player.size(); i++) {
+                playerAt = i;
                 String ans = "";
                 int t = i + 1;
                 System.out.println("It is now player " + t + "'s turn");
@@ -300,12 +283,6 @@ public class Main extends JFrame {
                     }
                 }
                 if(cp.equals("yes")) {
-                    frame.remove(front);
-                    frame.add(gameboard.get(i));
-                    frame.setVisible(true);
-                    showHand(i);
-                    System.out.println("1. Play a card");
-                    System.out.println("2. Draw a card");
                     ans = scan.nextLine();
                     if(ans.equals("1")) {
                         boolean keepPlay = true;
@@ -355,11 +332,14 @@ public class Main extends JFrame {
                             continue;
                         }
                     }
-                    this.player.get(i).addCard(currentDeck.pop());
-                    explode(i);
-                    showHand(i);
                 }
             }
         }
+    }
+    public LinkedList<Card> returnDeck(){
+        return this.currentDeck;
+    }
+    public Player returnPlayer(){
+        return player.get(playerAt);
     }
 }
