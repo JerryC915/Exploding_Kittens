@@ -258,11 +258,9 @@ public class Main extends JFrame {
                             Card getAttackCard = currentDeck.pop();
                             this.player.get(i).addCard(getAttackCard);
                             this.gameboard.get(i).addCardImage(getAttackCard.getName());
-                            explode(i);
                         }
                     }else {
                         System.out.println("1. Defend with: ");
-                        this.player.get(i).showCounterCards();
                         System.out.println("or");
                         System.out.println("2. You choose to draw the cards");
                         String c = scan.nextLine();
@@ -277,7 +275,6 @@ public class Main extends JFrame {
                         }else if(c.equals("2")) {
                             for (int j = 0; j < numCardAttack; j++) {
                                 this.player.get(i).addCard(currentDeck.pop());
-                                explode(i);
                             }
                         }
                     }
@@ -356,5 +353,8 @@ public class Main extends JFrame {
     }
     public void setNumCardAttack(int i) {
         this.numCardAttack = this.numCardAttack + i;
+    }
+    public Player getSpecificPlayer(int i) {
+        return this.player.get(i);
     }
 }
