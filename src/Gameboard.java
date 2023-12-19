@@ -11,9 +11,9 @@ public class Gameboard extends JPanel {
     private LinkedList<String> cardNames = new LinkedList<>();
     private Map<JButton, String> selectedCards = new HashMap<>();
     private JButton Play, Draw;
-    private JPanel mainPanel, centerPanel, playerPanel, cardPanel,gameOverScreen;
+    private JPanel mainPanel, centerPanel, playerPanel, cardPanel,gameOverScreen,cardPanel2;
     private JFrame frame;
-    private CardLayout cardLayout;
+    private CardLayout cardLayout,cardLayout2;
     private Main main;
 
     public Gameboard(int player, Main main) {
@@ -60,7 +60,7 @@ public class Gameboard extends JPanel {
         Draw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Card x = main.returnDeck().pop();
+                Card x = main.popDeck();
                 addCardImage(x.getName());
                 main.returnPlayer().addCard(x);
                 if(x.getName().equals("Exploding Kittens")) {
@@ -79,7 +79,7 @@ public class Gameboard extends JPanel {
                         if (explodingKittenIndex != null && !explodingKittenIndex.isEmpty()) {
                             try {
                                 int index = Integer.parseInt(explodingKittenIndex);
-                                main.returnDeck().add(index-1,new Card("Exploding Kittens"));
+                                main.addCardToDeck(new Card("Exploding Kittens"),index - 1);
                             } catch (NumberFormatException ex) {
                                 JOptionPane.showMessageDialog(null, "Please enter a valid number.");
                             }
@@ -145,6 +145,17 @@ public class Gameboard extends JPanel {
         for (Map.Entry<JButton, String> entry : selectedCards.entrySet()) {
             JButton selectedCardButton = entry.getKey();
             String selectedCardName = entry.getValue();
+            if(selectedCards.size() > 1) {
+                JOptionPane.showMessageDialog(null, "Which player do you wish to steal from?");
+
+                if(selectedCards.size() == 2) {
+
+                }else if(selectedCards.size() == 3) {
+
+                }
+            }else {
+                play(selectedCardName);
+            }
             playerPanel.remove(selectedCardButton);
             cardImages.removeIf(icon -> icon.equals(selectedCardButton.getIcon())); //Quick note, I looked this part up online
             cardNames.removeIf(name -> ("images/" + name + ".png").equals(selectedCardButton.getIcon().toString())); //This one too, I was in confusion for how to remove these things away
@@ -158,6 +169,15 @@ public class Gameboard extends JPanel {
             if(cardNames.get(i).equals(name)) {
                 cardImages.remove(i);
             }
+        }
+    }
+    public void play(String name) {
+        if(name.equals("Attack")) {
+            main.setNumCardAttack(2);
+        }else if(name.equals("Shuffle")) {
+            main.shuffleDeck();
+        }else if(name.equals("See The Future")) {
+            JOptionPane.showMessageDialog(null, "The next three cards in the deck: \n" +main.returnDeck().get(0).getName()+"\n"+main.returnDeck().get(1).getName()+"\n"+main.returnDeck().get(2).getName());
         }
     }
 }

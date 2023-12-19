@@ -339,7 +339,22 @@ public class Main extends JFrame {
     public LinkedList<Card> returnDeck(){
         return this.currentDeck;
     }
+    public void addCardToDeck(Card x, int i) {
+        this.currentDeck.add(i, x);
+    }
+    public Card popDeck() {
+        return this.currentDeck.pop();
+    }
+    public void shuffleDeck() {
+        Collections.shuffle(currentDeck);
+    }
     public Player returnPlayer(){
         return player.get(playerAt);
+    }
+    public int getNumCardAttack() {
+        return this.numCardAttack;
+    }
+    public void setNumCardAttack(int i) {
+        this.numCardAttack = this.numCardAttack + i;
     }
 }
