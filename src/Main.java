@@ -139,11 +139,6 @@ public class Main extends JFrame {
         cardPanel = new JPanel();
         cardLayout= new CardLayout();
         cardPanel.setLayout(cardLayout);
-
-        frame.remove(front);
-        frame.revalidate();
-        frame.repaint();
-        frame.setVisible(true);
     }
     public LinkedList<Card> returnDeck(){
         return this.currentDeck;
@@ -176,9 +171,59 @@ public class Main extends JFrame {
         return this.player.size();
     }
     public void showNextGameboard() {
-        currentGameboardIndex = (currentGameboardIndex + 1) % gameboard.size();
+        JFrame temp = new JFrame();
+        temp.setSize(1500,600);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel("Is this player " + ((int)(currentGameboardIndex)+1) +"?");
+        label.setFont(new Font("Arial", Font.PLAIN, 36));
+        label.setHorizontalAlignment(JLabel.CENTER);
+
+        JButton yesButton = new JButton("Yes");
+        yesButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        yesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                temp.remove(panel);
+                temp.setVisible(false);
+                currentGameboardIndex = (currentGameboardIndex + 1) % gameboard.size();
+                cardLayout.show(cardPanel, Integer.toString(currentGameboardIndex));
+                gameboard.get(currentGameboardIndex).display();
+                if(numCardAttack> 0) {
+                    if(returnPlayer().CounterCards()) {
+                        String cardDefend = JOptionPane.showInputDialog(null, "You are under attack! Which card do you choose to defend with? You can also say none");
+                        if(cardDefend.equals("Attack") && returnPlayer().containsCard("Attack")) {
+                            setNumCardAttack(getNumAttack() + 2);
+
+                        }else if(cardDefend.equals("Nope") && returnPlayer().containsCard("Nope")) {
+                            setNumCardAttack(0);
+                        }else if(cardDefend.equals("none")) {
+                            for (int i = 0; i < getNumAttack(); i++) {
+                                gameboard.get(currentGameboardIndex).drawCard(0);
+                            }
+                            setNumCardAttack(0);
+                        }
+                    }else {
+                        JOptionPane.showMessageDialog(null, "You do not have any card to defend with the attack, we will automatically draw " + getNumAttack() + " cards for you ");
+                        for (int i = 0; i < getNumAttack(); i++) {
+                            gameboard.get(currentGameboardIndex).drawCard(0);
+                        }
+                    }
+                }
+            }
+        });
+        panel.add(label, BorderLayout.CENTER);
+        panel.add(yesButton, BorderLayout.SOUTH);
+        temp.add(panel);
+        temp.setVisible(true);
+
+    }
+    public void showSpecificBoard(int player){
+        cardLayout.show(cardPanel, Integer.toString(player-1));
+        gameboard.get(currentGameboardIndex).display();
+    }
+    public void showCurrentBoard(){
         cardLayout.show(cardPanel, Integer.toString(currentGameboardIndex));
         gameboard.get(currentGameboardIndex).display();
-
     }
 }

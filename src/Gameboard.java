@@ -19,50 +19,16 @@ public class Gameboard extends JPanel {
     public Gameboard(int player, Main main) {
         this.main = main;
         frame = new JFrame();
-        frame.setSize(1000,600);
+        frame.setSize(1500,600);
 
         cardPanel = new JPanel();
         cardLayout = new CardLayout();
         cardPanel.setLayout(cardLayout);
 
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Is this player " + player +"?");
-        label.setFont(new Font("Arial", Font.PLAIN, 36));
-        label.setHorizontalAlignment(JLabel.CENTER);
 
-        JButton yesButton = new JButton("Yes");
-        yesButton.setFont(new Font("Arial", Font.PLAIN, 24));
-        yesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardPanel,"Actual Screen");
-                if(main.getNumAttack() > 0) {
-                    if(main.returnPlayer().CounterCards()) {
-                        String cardDefend = JOptionPane.showInputDialog(null, "You are under attack! Which card do you choose to defend with? You can also say none");
-                        if(cardDefend.equals("Attack") && main.returnPlayer().containsCard("Attack")) {
-                            main.setNumCardAttack(main.getNumAttack() + 2);
-                        }else if(cardDefend.equals("Nope") && main.returnPlayer().containsCard("Nope")) {
-                            main.setNumCardAttack(0);
-                        }else if(cardDefend.equals("none")) {
-                            for (int i = 0; i < main.getNumAttack(); i++) {
-                                drawCard(0);
-                            }
-                        }
-                    }else {
-                        JOptionPane.showMessageDialog(null, "You do not have any card to defend with the attack, we will automatically draw " + main.getNumAttack() + " cards for you ");
-                        for (int i = 0; i < main.getNumAttack(); i++) {
-                            drawCard(0);
-                        }
-                    }
-                }
-            }
-        });
-
-        panel.add(label, BorderLayout.CENTER);
-        panel.add(yesButton, BorderLayout.SOUTH);
 
         mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setSize(1000,600);
+        mainPanel.setSize(1500,600);
         playerPanel = new JPanel(new FlowLayout());
 
         centerPanel = new JPanel();
@@ -96,7 +62,6 @@ public class Gameboard extends JPanel {
         gameOverLabel.setFont(new Font("Arial", Font.BOLD, 72));
         gameOverScreen.add(gameOverLabel,BorderLayout.CENTER);
 
-        cardPanel.add(panel,"Confirmation");
         cardPanel.add(mainPanel,"Actual Screen");
         cardPanel.add(gameOverScreen, "Game Over Screen");
         frame.add(cardPanel);
@@ -136,7 +101,6 @@ public class Gameboard extends JPanel {
                 String splayerToSteal = JOptionPane.showInputDialog(null, "Which player do you wish to steal from?");
                 int playerToSteal = Integer.parseInt(splayerToSteal);
                 if(main.getSpecificPlayer(playerToSteal).CounterCards()) {
-                    cardLayout.show(cardPanel2,"RegularCatAttack");
                     if (selectedCards.size() == 2) {
                         createRegularCatAttackPanel(2,playerToSteal);
                         for (int i = 0; i < 2; i++) {
@@ -202,6 +166,7 @@ public class Gameboard extends JPanel {
     public void play(String name) {
         if(name.equals("Attack")) {
             main.setNumCardAttack(main.getNumAttack() + 2);
+            main.showNextGameboard();
         }else if(name.equals("Shuffle")) {
             main.shuffleDeck();
         }else if(name.equals("See The Future")) {
@@ -216,7 +181,9 @@ public class Gameboard extends JPanel {
         }
     }
     public void createRegularCatAttackPanel(int x, int playerToSteal) {
-        cardLayout.show(cardPanel2,"RegularCatAttack");
+        cardPanel2 = new JPanel();
+        cardLayout2 = new CardLayout();
+        cardPanel2.setLayout(cardLayout2);
         String sIndexCardWant = "";
         String CardWant = "";
         int indexCardWant = 0;
@@ -270,9 +237,6 @@ public class Gameboard extends JPanel {
             CardWant = JOptionPane.showInputDialog(null,"What card do you wish to get?");
         }
 
-        cardPanel2 = new JPanel();
-        cardLayout2 = new CardLayout();
-        cardPanel2.setLayout(cardLayout2);
         JPanel tempConfirmation = new JPanel(new BorderLayout());
         JLabel label2 = new JLabel("Is this player " + playerToSteal +"?");
         label2.setFont(new Font("Arial", Font.PLAIN, 36));
@@ -295,9 +259,12 @@ public class Gameboard extends JPanel {
         cardPanel2.add(tempConfirmation, "Confirmation2");
         cardPanel2.add(tempText,"TempText");
         cardPanel.add(cardPanel2,"RegularCatAttack");
+        cardLayout.show(cardPanel2,"RegularCatAttack");
     }
     public void createFavorPanel(int playerToFavor) {
-        cardLayout.show(cardPanel3,"Favor");
+        cardPanel3 = new JPanel();
+        cardlayout3 = new CardLayout();
+        cardPanel3.setLayout(cardlayout3);
         JPanel temp = new JPanel();
         if(main.returnPlayer().containsCard("Nope")) {
 
@@ -322,11 +289,7 @@ public class Gameboard extends JPanel {
         }
         JLabel tempLabel = new JLabel("You do not have any card to defend the favor");
         favorCatExtended(playerToFavor);
-        cardPanel3.add(temp,"temp");
 
-        cardPanel3 = new JPanel();
-        cardlayout3 = new CardLayout();
-        cardPanel3.setLayout(cardlayout3);
 
         JPanel tempConfirmation2 = new JPanel(new BorderLayout());
         JLabel label3 = new JLabel("Is this player " + playerToFavor +"?");
@@ -343,12 +306,16 @@ public class Gameboard extends JPanel {
         tempConfirmation2.add(label3, BorderLayout.CENTER);
         tempConfirmation2.add(yesButton3, BorderLayout.SOUTH);
 
+        cardPanel3.add(temp,"temp");
         cardPanel3.add(tempConfirmation2,"tempConfirmation2");
-        cardlayout3.show(tempConfirmation2,"Confirmation3");
         cardPanel.add(cardPanel3,"Favor");
+        cardLayout.show(cardPanel3,"Favor");
+        cardlayout3.show(tempConfirmation2,"Confirmation3");
     }
     public void favorCatExtended(int playerToFlavor) {
+        main.showSpecificBoard(playerToFlavor);
         String giveAwayCard = JOptionPane.showInputDialog(null, "Which card do you want to give away?");
+        main.showCurrentBoard();
         if(main.getSpecificPlayer(playerToFlavor-1).containsCard(giveAwayCard)){
             main.returnPlayer().addCard(new Card(giveAwayCard));
             main.getSpecificPlayer(playerToFlavor-1).removeCard(giveAwayCard);
@@ -366,10 +333,11 @@ public class Gameboard extends JPanel {
                 playerPanel.remove(tempIndex);
                 cardImages.remove(tempIndex);
                 cardNames.remove(tempIndex);
-                tempIndex = cardNames.indexOf("Exploding Kittens");
+                tempIndex = cardNames.indexOf("Exploding Kittens") - 1;
                 playerPanel.remove(tempIndex);
                 cardImages.remove(tempIndex);
                 cardNames.remove(tempIndex);
+                frame.repaint();
                 String explodingKittenIndex = JOptionPane.showInputDialog(null, "Please choose an index from 1-" + main.returnDeck().size()+" that you want to put the exploding kitten at: ");
                 if (explodingKittenIndex != null && !explodingKittenIndex.isEmpty()) {
                     try {
@@ -391,5 +359,6 @@ public class Gameboard extends JPanel {
     }
     public void display(){
         this.frame.setVisible(true);
+        this.frame.repaint();
     }
 }
