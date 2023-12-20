@@ -1,56 +1,64 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Test {
-    private JFrame frame;
-    private JLabel messageLabel;
-
-    public Test() {
-        frame = new JFrame("Cat Blocking Screen");
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
-
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2; // Spanning two columns
-        gbc.insets = new Insets(10, 10, 10, 10); // Padding
-
-        messageLabel = new JLabel("<html><div style='text-align: center;'>You have a choice to block the cats being used on you.<br>Please choose one of the cards below to block the cats or click the Skip button to let them steal you.</div></html>", SwingConstants.CENTER);
-        centerPanel.add(messageLabel, gbc);
-
-        gbc.gridwidth = 1; // Resetting gridwidth
-        gbc.gridy++; // Moving to the next row
-
-        JButton skipButton = new JButton("Skip");
-        skipButton.addActionListener(e -> {
-            // Add your action when the skip button is clicked
-            JOptionPane.showMessageDialog(frame, "You chose to skip blocking the cats.");
-        });
-
-        centerPanel.add(skipButton, gbc);
-
-        gbc.gridx++;
-
-        JButton yesButton = new JButton("Yes");
-        yesButton.addActionListener(e -> {
-            // Add your action when the yes button is clicked
-            JOptionPane.showMessageDialog(frame, "You chose to block the cats.");
-        });
-
-        centerPanel.add(yesButton, gbc);
-
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-
-        frame.add(mainPanel);
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null); // Center the frame on the screen
-        frame.setVisible(true);
-    }
+    private static CardLayout cardLayout;
+    private static JPanel cardPanel;
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Test::new);
+        JFrame frame = new JFrame("CardLayout Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+
+        JPanel panel1 = new JPanel();
+        panel1.setBackground(Color.RED);
+        panel1.add(new JLabel("Panel 1"));
+        cardPanel.add(panel1, "Panel1");
+
+        JPanel panel2 = new JPanel();
+        panel2.setBackground(Color.BLUE);
+        panel2.add(new JLabel("Panel 2"));
+        cardPanel.add(panel2, "Panel2");
+
+        JPanel panel3 = new JPanel();
+        panel3.setBackground(Color.GREEN);
+        panel3.add(new JLabel("Panel 3"));
+        cardPanel.add(panel3, "Panel3");
+
+        frame.add(cardPanel, BorderLayout.CENTER);
+
+        JButton showPanel1Button = new JButton("Show Panel 1");
+        showPanel1Button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardPanel, "Panel1");
+            }
+        });
+
+        JButton showPanel2Button = new JButton("Show Panel 2");
+        showPanel2Button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardPanel, "Panel2");
+            }
+        });
+
+        JButton showPanel3Button = new JButton("Show Panel 3");
+        showPanel3Button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(cardPanel, "Panel3");
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(showPanel1Button);
+        buttonPanel.add(showPanel2Button);
+        buttonPanel.add(showPanel3Button);
+
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        frame.setVisible(true);
     }
 }
