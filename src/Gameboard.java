@@ -99,7 +99,7 @@ public class Gameboard extends JPanel {
             String selectedCardName = entry.getValue();
             if(selectedCards.size() > 1) {
                 String splayerToSteal = JOptionPane.showInputDialog(null, "Which player do you wish to steal from?");
-                int playerToSteal = Integer.parseInt(splayerToSteal);
+                int playerToSteal = Integer.parseInt(splayerToSteal) - 1;
                 if(main.getSpecificPlayer(playerToSteal).CounterCards()) {
                     if (selectedCards.size() == 2) {
                         createRegularCatAttackPanel(2,playerToSteal);
